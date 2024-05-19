@@ -1,4 +1,4 @@
-package com.example.passwordmanager.ui.theme.utils
+package com.example.passwordmanager.utils
 
 
 object Constants  {

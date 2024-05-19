@@ -1,8 +1,6 @@
-package com.example.passwordmanager.ui.theme.utils
+package com.example.passwordmanager.utils
 
 import android.util.Base64
-import java.nio.charset.Charset
-import java.security.Key
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.spec.SecretKeySpec

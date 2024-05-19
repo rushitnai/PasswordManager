@@ -1,11 +1,10 @@
-package com.example.passwordmanager.ui.theme.viewmodel
+package com.example.passwordmanager.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
-import com.example.passwordmanager.ui.theme.PasswordRepository
-import com.example.passwordmanager.ui.theme.model.PasswordModel
+import com.example.passwordmanager.PasswordRepository
+import com.example.passwordmanager.model.PasswordModel
 import kotlinx.coroutines.launch
 
 class PasswordViewModel(val repository: PasswordRepository) : ViewModel() {

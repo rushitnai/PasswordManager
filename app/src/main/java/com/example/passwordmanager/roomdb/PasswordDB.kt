@@ -1,10 +1,10 @@
-package com.example.passwordmanager.ui.theme.roomdb
+package com.example.passwordmanager.roomdb
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.passwordmanager.ui.theme.model.PasswordModel
+import com.example.passwordmanager.model.PasswordModel
 
 @Database(entities = [PasswordModel::class], version = 1)
 abstract class PasswordDB : RoomDatabase() {

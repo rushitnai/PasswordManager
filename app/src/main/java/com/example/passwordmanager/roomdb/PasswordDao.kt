@@ -1,14 +1,13 @@
-package com.example.passwordmanager.ui.theme.roomdb
+package com.example.passwordmanager.roomdb
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.example.passwordmanager.ui.theme.model.PasswordModel
+import com.example.passwordmanager.model.PasswordModel
 
 @Dao
 interface PasswordDao {

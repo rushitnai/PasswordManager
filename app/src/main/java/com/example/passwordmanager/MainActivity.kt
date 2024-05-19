@@ -3,7 +3,6 @@
 package com.example.passwordmanager
 
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -50,7 +49,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
@@ -62,13 +60,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.passwordmanager.ui.theme.PasswordManagerTheme
-import com.example.passwordmanager.ui.theme.PasswordRepository
-import com.example.passwordmanager.ui.theme.model.PasswordModel
-import com.example.passwordmanager.ui.theme.roomdb.PasswordDB
-import com.example.passwordmanager.ui.theme.utils.Constants
-import com.example.passwordmanager.ui.theme.utils.EncryptionHelper
-import com.example.passwordmanager.ui.theme.viewmodel.ItemViewModelFactory
-import com.example.passwordmanager.ui.theme.viewmodel.PasswordViewModel
+import com.example.passwordmanager.model.PasswordModel
+import com.example.passwordmanager.roomdb.PasswordDB
+import com.example.passwordmanager.utils.Constants
+import com.example.passwordmanager.utils.EncryptionHelper
+import com.example.passwordmanager.viewmodel.ItemViewModelFactory
+import com.example.passwordmanager.viewmodel.PasswordViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -268,10 +265,10 @@ fun ScaffoldWithFab(activity: MainActivity, passwordViewModel: PasswordViewModel
 //                    addItem( model,items)
                     if(passwordViewModel.insertPassword(model)){
                         isSheetOpen = false
-                        Toast.makeText(activity,Constants.SUCCESS_INSERT_MESSAGE,Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, Constants.SUCCESS_INSERT_MESSAGE,Toast.LENGTH_SHORT).show()
                     }
                     else{
-                        Toast.makeText(activity,Constants.ERROR_MESSAGE,Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, Constants.ERROR_MESSAGE,Toast.LENGTH_SHORT).show()
 
                     }
 
@@ -399,10 +396,11 @@ fun ScaffoldWithFab(activity: MainActivity, passwordViewModel: PasswordViewModel
                                     selectedAccount?.let {
                                         if(passwordViewModel.deletePassword(it)){
                                             isSheetOpen= false
-                                            Toast.makeText(activity,Constants.SUCCESS_DELETE_MESSAGE,Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(activity,
+                                                Constants.SUCCESS_DELETE_MESSAGE,Toast.LENGTH_SHORT).show()
                                         }
                                         else{
-                                            Toast.makeText(activity,Constants.ERROR_MESSAGE,Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(activity, Constants.ERROR_MESSAGE,Toast.LENGTH_SHORT).show()
                                         }
                                     }
 
@@ -423,10 +421,11 @@ fun ScaffoldWithFab(activity: MainActivity, passwordViewModel: PasswordViewModel
                                         val updatedData = PasswordModel(selectedAccount!!.id,accountName, userName, password)
                                         if(passwordViewModel.updatePassword(updatedData)){
                                             isSheetOpen= false
-                                            Toast.makeText(activity,Constants.SUCCESS_UPDATE_MESSAGE,Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(activity,
+                                                Constants.SUCCESS_UPDATE_MESSAGE,Toast.LENGTH_SHORT).show()
                                         }
                                         else{
-                                            Toast.makeText(activity,Constants.ERROR_MESSAGE,Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(activity, Constants.ERROR_MESSAGE,Toast.LENGTH_SHORT).show()
 
                                         }
                                     }
@@ -464,24 +463,7 @@ fun ScaffoldWithFab(activity: MainActivity, passwordViewModel: PasswordViewModel
 
 }
 
-@Composable
-fun EditableTextField(
-    accountName: MutableState<String>,
-    isAccountNameValid: Boolean,
-) {
-    var textFieldValue by remember(accountName) { mutableStateOf(accountName.value) }
 
-    TextField(
-        value = textFieldValue,
-        onValueChange = { newValue ->
-            textFieldValue = newValue
-            accountName.value = newValue
-        },
-        label = { Text("Account Name") },
-        modifier = Modifier.fillMaxWidth(),
-        isError = !isAccountNameValid
-    )
-}
 
 
 fun DecryptedPassword(password: String): String {
@@ -492,139 +474,7 @@ fun DecryptedPassword(password: String): String {
         return EncryptionHelper.decrypt(password)
     }
 }
-@Composable
-fun EditBottomSheetView(password: PasswordModel) {
-    val sheetState = rememberModalBottomSheetState()
-    var isSheetOpen by rememberSaveable {
-        mutableStateOf(false)
-    }
-    if(isSheetOpen){
-        ModalBottomSheet(
-            sheetState = sheetState,
-            onDismissRequest = { isSheetOpen = false }) {
-            // State variables to hold the text of each TextField
-            var accountName by remember { mutableStateOf(password.accountName) }
-            var userName by remember { mutableStateOf(password.userName) }
-            var password by remember { mutableStateOf(password.password) }
 
-
-            // Validation states for each TextField
-            var isAccountnameValid by remember { mutableStateOf(true) }
-            var isUsernameValid by remember { mutableStateOf(true) }
-            var isPasswordValid by remember { mutableStateOf(true) }
-
-            // Log all values when submit button is clicked
-            val submitValues: () -> Unit = {
-                // Validate each TextField
-                isAccountnameValid = accountName.isNotEmpty()
-                isUsernameValid = userName.isNotEmpty()
-                isPasswordValid = password.isNotEmpty()
-
-            /*    if(isAccountnameValid && isUsernameValid && isPasswordValid){
-                    val model = PasswordModel(0,accountName = accountName, userName = userName, password = password)
-                    addItem( model,items)
-                    isSheetOpen = false
-                    passwordViewModel.insertPassword(model)
-                }*/
-            }
-
-            // A column to arrange the TextFields and Button vertically
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Column {
-                    TextField(
-                        value = accountName,
-                        onValueChange = { accountName = it },
-                        label = { Text("Account Name") },
-                        modifier = Modifier.fillMaxWidth(),
-                        isError = !isAccountnameValid
-                    )
-                    if (!isAccountnameValid) {
-                        Text(
-                            text = "please enter account name",
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-                        )
-                    }
-                }
-                Column {
-                    TextField(
-                        value = userName,
-                        onValueChange = { userName = it },
-                        label = { Text("Username/Email") },
-                        modifier = Modifier.fillMaxWidth(),
-                        isError = !isUsernameValid
-                    )
-                    if (!isUsernameValid) {
-                        Text(
-                            text = "please enter user name",
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-                        )
-                    }
-                }
-                Column {
-                    TextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Password") },
-                        modifier = Modifier.fillMaxWidth() ,
-                        isError = !isPasswordValid
-                    )
-                    if (!isPasswordValid) {
-                        Text(
-                            text = "please enter password",
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.padding(start = 16.dp, top = 4.dp)
-                        )
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Button(
-                        onClick = { /* Handle Red Button Click */ },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
-                    ) {
-                        Text(text = "Delete", color = Color.White)
-                    }
-
-                    Button(
-                        onClick = { /* Handle Black Button Click */ },
-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Gray)
-                    ) {
-                        Text(text = "Edit", color = Color.White)
-                    }
-                }
-                /*// Add account Button
-                Button(
-                    onClick = submitValues,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colorScheme.secondary
-                    )
-                ) {
-                    Text("Add Account")
-                }*/
-            }
-        }
-    }
-
-}
 
  @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {

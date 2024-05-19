@@ -1,9 +1,9 @@
-package com.example.passwordmanager.ui.theme
+package com.example.passwordmanager
 
 import androidx.lifecycle.LiveData
-import com.example.passwordmanager.ui.theme.model.PasswordModel
-import com.example.passwordmanager.ui.theme.roomdb.PasswordDao
-import com.example.passwordmanager.ui.theme.utils.EncryptionHelper
+import com.example.passwordmanager.model.PasswordModel
+import com.example.passwordmanager.roomdb.PasswordDao
+import com.example.passwordmanager.utils.EncryptionHelper
 
 class PasswordRepository(private val passwordDao: PasswordDao) {
     //val passwords: Flow<List<PasswordModel>> = passwordDao.getPasswords()

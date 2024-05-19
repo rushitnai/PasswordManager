@@ -1,4 +1,4 @@
-package com.example.passwordmanager.ui.theme.model
+package com.example.passwordmanager.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
